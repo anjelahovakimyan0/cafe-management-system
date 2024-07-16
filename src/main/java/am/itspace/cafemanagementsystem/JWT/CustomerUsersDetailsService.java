@@ -33,6 +33,9 @@ public class CustomerUsersDetailsService implements UserDetailsService {
     }
 
     public am.itspace.cafemanagementsystem.POJO.User getUserDetail() {
+//        am.itspace.cafemanagementsystem.POJO.User user = userDetail;
+//        user.setPassword(null);
+//        return user;
         return userDetail;
     }
 }
