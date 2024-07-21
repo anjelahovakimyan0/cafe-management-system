@@ -16,15 +16,14 @@ spring:
     mail:
         host: smtp.gmail.com
         port: 587
-        username: amitkumarx31@gmail.com
-        password: '***********'
+        username: aharonchikkhovakimyann@gmail.com
+        password: vhnikcwupwbkubbk
         properties:
           mail:
             smtp:
                 auth: true
-          smpt:
-              starttls:
-                enable: true
+                starttls:
+                    enable: true
 
 server:
     port: 8081
