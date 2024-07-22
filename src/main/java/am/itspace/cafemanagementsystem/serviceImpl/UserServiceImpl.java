@@ -93,11 +93,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<List<User>> getAllUser() {
         try {
-            if (jwtFilter.isAdmin()) {
-                return new ResponseEntity<>(userDao.findAll(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
-            }
+//            if (jwtFilter.isAdmin()) {
+            return new ResponseEntity<>(userDao.findAll(), HttpStatus.OK);
+//            } else {
+//                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
+//            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -107,20 +107,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<String> update(Map<String, String> requestMap) {
         try {
-            if (jwtFilter.isAdmin()) {
-                Optional<User> optional = userDao.findById(Integer.parseInt(requestMap.get("id")));
-                if (!optional.isEmpty()) {
-                    User user = optional.get();
-                    user.setStatus(requestMap.get("status"));
-                    userDao.save(user);
-                    sendMailToAllAdmin(requestMap.get("status"), optional.get().getEmail(), userDao.findAllByRole("Admin"));
-                    return CafeUtils.getResponseEntity("User status updated successfully!", HttpStatus.OK);
-                } else {
-                    CafeUtils.getResponseEntity("User is does not exists!", HttpStatus.OK);
-                }
+//            if (jwtFilter.isAdmin()) {
+            Optional<User> optional = userDao.findById(Integer.parseInt(requestMap.get("id")));
+            if (!optional.isEmpty()) {
+                User user = optional.get();
+                user.setStatus(requestMap.get("status"));
+                userDao.save(user);
+                sendMailToAllAdmin(requestMap.get("status"), optional.get().getEmail(), userDao.findAllByRole("Admin"));
+                return CafeUtils.getResponseEntity("User status updated successfully!", HttpStatus.OK);
             } else {
-                return CafeUtils.getResponseEntity(CafeConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+                CafeUtils.getResponseEntity("User is does not exists!", HttpStatus.OK);
             }
+//            } else {
+//                return CafeUtils.getResponseEntity(CafeConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+//            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

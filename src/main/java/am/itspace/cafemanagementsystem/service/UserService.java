@@ -1,9 +1,6 @@
 package am.itspace.cafemanagementsystem.service;
 
-import am.itspace.cafemanagementsystem.POJO.Category;
 import am.itspace.cafemanagementsystem.POJO.User;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

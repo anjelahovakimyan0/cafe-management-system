@@ -40,9 +40,8 @@ public class SecurityConfig {
                 .and()
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests()
-                .requestMatchers("/user/login", "/user/signup", "/user/forgotPassword", "/category/update")
-                .permitAll()
-                .anyRequest().authenticated()
+//                .requestMatchers("/user/login", "/user/signup", "/user/forgotPassword").permitAll()
+                .anyRequest().permitAll()
                 .and().exceptionHandling()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
