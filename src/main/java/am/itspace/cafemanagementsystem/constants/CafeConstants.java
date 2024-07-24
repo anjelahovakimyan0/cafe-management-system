@@ -8,6 +8,6 @@ public class CafeConstants {
 
     public static final String UNAUTHORIZED_ACCESS = "Unauthorized access";
 
-    public static final String STORE_LOCATION = "D:\\cafe-management-system\\uploadPdf";
+    public static final String STORE_LOCATION = "E:\\Users\\User\\IdeaProjects\\cafe-management-system\\uploadPdf";
 
 }

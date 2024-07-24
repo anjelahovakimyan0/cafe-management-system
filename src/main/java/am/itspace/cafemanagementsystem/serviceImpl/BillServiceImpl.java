@@ -11,14 +11,18 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.FileOutputStream;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -32,7 +36,7 @@ public class BillServiceImpl implements BillService {
     private BillDao billDao;
 
     @Override
-    public ResponseEntity<String> generateReport(Map<String, Object> requestMap) {
+    public ResponseEntity<String> generateReport(Map<String, Object> requestMap) {//TODO
         log.info("Inside generateReport");
         try {
             String fileName;
@@ -45,7 +49,7 @@ public class BillServiceImpl implements BillService {
                     insertBill(requestMap);
                 }
 
-                String data = "Name: " + requestMap.get("name") + "\n ContactNumber: "
+                String data = "Name: " + requestMap.get("name") + "\nContactNumber: "
                         + requestMap.get("contactNumber") + "\nEmail: " + requestMap.get("email")
                         + "\nPaymentMethod: " + requestMap.get("paymentMethod");
 
@@ -74,8 +78,8 @@ public class BillServiceImpl implements BillService {
 
                 Paragraph footer = new Paragraph("Total: " + requestMap.get("totalAmount")
                         + "\nThank you for visiting. Please visit again!!!" + getFont("Data"));
-                document.add(footer);
 
+                document.add(footer);
                 document.close();
 
                 return new ResponseEntity<>("{\"uuid\":\"" + fileName + "\"}", HttpStatus.OK);
@@ -85,6 +89,66 @@ public class BillServiceImpl implements BillService {
             ex.printStackTrace();
         }
         return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @Override
+    public ResponseEntity<List<Bill>> getBills() {
+        List<Bill> list = new ArrayList<>();
+        if (jwtFilter.isAdmin()) {
+            list = billDao.findAll();
+        } else {
+//            list = billDao.getBillByUserName(jwtFilter.getCurrentUser());
+        }
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> getPdf(Map<String, Object> requestMap) {
+        log.info("Inside getPdf : requestMap {}", requestMap);
+        try {
+            byte[] byteArray = new byte[0];
+            if (!requestMap.containsKey("uuid") && validateRequestMap(requestMap)) {
+                return new ResponseEntity<>(byteArray, HttpStatus.BAD_REQUEST);
+            }
+
+            String filePath = CafeConstants.STORE_LOCATION + "\\" + (String) requestMap.get("uuid") + ".pdf";
+
+            if (CafeUtils.isFileExist(filePath)) {
+                byteArray = getByteArray(filePath);
+                return new ResponseEntity<>(byteArray, HttpStatus.OK);
+            } else {
+                requestMap.put("isGenerate", false);
+                generateReport(requestMap);
+                byteArray = getByteArray(filePath);
+                return new ResponseEntity<>(byteArray, HttpStatus.OK);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> deleteBill(Integer id) {
+        try {
+            Optional<Bill> optional = billDao.findById(id);
+            if (!optional.isEmpty()) {
+                billDao.deleteById(id);
+                return CafeUtils.getResponseEntity("Bill Deleted Successfully!", HttpStatus.OK);
+            }
+            return CafeUtils.getResponseEntity("Bill id does not exist", HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private byte[] getByteArray(String filePath) throws IOException {
+        File initialFile = new File(filePath);
+        InputStream targetStream = new FileInputStream(initialFile);
+        byte[] byteArray = IOUtils.toByteArray(targetStream);
+        targetStream.close();
+        return byteArray;
     }
 
     private void addRows(PdfPTable table, Map<String, Object> data) {

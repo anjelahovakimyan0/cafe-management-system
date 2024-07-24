@@ -105,12 +105,12 @@ public class CategoryServiceImpl implements CategoryService {
         return category;
     }
 
-    private Set<Category> getUsedCategory() {
-        Set<Category> collect = productDao.findAll().stream()
+    private List<Category> getUsedCategory() {
+        List<Category> collect = productDao.findAll().stream()
                 .filter(c -> c.getCategory() != null)
                 .map(p -> p.getCategory())
-                .collect(Collectors.toSet());
-
+                .collect(Collectors.toList());
+        //TODO
         System.out.printf("Hello");
         return collect;
 

@@ -1,5 +1,7 @@
 package am.itspace.cafemanagementsystem.JWT;
 
+import am.itspace.cafemanagementsystem.service.DashboardService;
+import am.itspace.cafemanagementsystem.serviceImpl.DashboardServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
