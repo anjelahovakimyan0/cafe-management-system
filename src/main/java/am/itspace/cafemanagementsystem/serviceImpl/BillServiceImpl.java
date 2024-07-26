@@ -70,7 +70,7 @@ public class BillServiceImpl implements BillService {
                 table.setWidthPercentage(100);
                 addTableHeader(table);
 
-                JSONArray jsonArray = CafeUtils.getJsonArrayFromString((String) requestMap.get("productDetails"));
+                JSONArray jsonArray = CafeUtils.getJsonArrayFromString((ArrayList) requestMap.get("productDetails"));
                 for (int i = 0; i < jsonArray.length(); i++) {
                     addRows(table, CafeUtils.getMapFromJson(jsonArray.getString(i)));
                 }
@@ -151,7 +151,7 @@ public class BillServiceImpl implements BillService {
         return byteArray;
     }
 
-    private void addRows(PdfPTable table, Map<String, Object> data) {
+    private void addRows(PdfPTable table, Map<Object, Object> data) {
         log.info("Inside addRows");
         table.addCell((String) data.get("name"));
         table.addCell((String) data.get("category"));

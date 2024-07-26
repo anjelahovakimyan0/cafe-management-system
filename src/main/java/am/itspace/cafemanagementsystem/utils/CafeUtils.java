@@ -1,5 +1,6 @@
 package am.itspace.cafemanagementsystem.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
+import java.util.AbstractList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +19,7 @@ import java.util.Map;
 @Slf4j
 public class CafeUtils {
 
+   public static ObjectMapper objectMapper =new ObjectMapper();
     private CafeUtils() {
     }
 
@@ -30,16 +33,16 @@ public class CafeUtils {
         return "Bill-" + time;
     }
 
-    public static JSONArray getJsonArrayFromString(String data) throws JSONException {
+    public static JSONArray getJsonArrayFromString(AbstractList data) {
         JSONArray jsonArray = new JSONArray();
         jsonArray.put(data);
         return jsonArray;
     }
 
     // JSON to java object
-    public static Map<String, Object> getMapFromJson(String data) {
+    public static Map<Object, Object> getMapFromJson(String data) {
         if (!Strings.isNullOrEmpty(data)) {
-            return new Gson().fromJson(data, new TypeToken<Map<String, Object>>() {
+            return new Gson().fromJson(data, new TypeToken<Map<Object, Object>>() {
 
             }.getType());
         }
